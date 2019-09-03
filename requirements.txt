@@ -1,0 +1,11 @@
+aiohttp==3.5.4
+async-timeout==3.0.1
+attrs==19.1.0
+chardet==3.0.4
+EbookLib==0.17.1
+idna==2.8
+lxml==4.4.1
+multidict==4.5.2
+opencc-python-reimplemented==0.1.4
+six==1.12.0
+yarl==1.3.0
