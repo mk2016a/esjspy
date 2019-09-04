@@ -1,6 +1,11 @@
 # esjspy
 用于 esjzone 的 python 爬虫。可以抓取 esjzone 的大部分小说并生成 epub 文件。
 
+## Attention
+为了减少 esjzone 站点无谓的流量和服务器资源消耗，请尽可能减少本模块的使用。
+
+如果你不是整合君，请最好不要使用本模块。
+
 ## Install 
 ```
 git clone https://github.com/Dothion/esjspy
@@ -18,13 +23,13 @@ cd esjspy
 ## Usage 
 (need python>=3.7)
 
-##### 一次性抓取全部轻小说
+#### 一次性抓取全部轻小说
 ```python
 import esjspy
 esjspy.save_books()
 ```
 
-##### 抓取单本轻小说
+#### 抓取单本轻小说
 ```python
 import esjspy
 esjspy.save_book(book_url='https://www.esjzone.cc/detail/1563843171.html')
@@ -44,7 +49,5 @@ esjspy.save_book(
 - 完善注释和文档
 - 增加其他网站 (qinxiaoshuo、真白萌, etc.) 的支持
 
-## Attention
-为了减少 esjzone 站点无谓的流量和服务器资源消耗，请尽可能减少本模块的使用。
-
-如果你不是整合君，请最好不要使用本模块。
+## License
+代码使用 GPL v3 开源。请阅读 LICENSE 文件获取进一步说明。
