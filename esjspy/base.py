@@ -87,8 +87,8 @@ class Chapter:
 
 # 我本人举双手双脚赞同著作权保护法
 # 可是我真的有两头牛
-_copyright_page = Chapter(url='', title='关于著作权', content=[
-    '''本 epub 副本由 esjspy 工具自动生成，仅供个人学习、     
+_copyright_page = Chapter(url='', title='免责声明', content=[
+    '''本 epub 副本由 <a href=https://github.com/Dothion/esjspy>esjspy</a> 工具自动生成，仅供个人学习、     
        研究和欣赏使用。''',
     '''本书原书著作权由原书著作权方所有，翻译著作权由译者所有。
        若未取得著作权方的授权，则任何人不得修改、转载、
