@@ -160,7 +160,7 @@ def save_books(book_urls: Optional[List[str]] = None, black_list: set = BLACK_LI
             f.writelines(esjspy.base.missing_log)
     if esjspy.base.black_list_log:
         with open('black_list.txt', 'w', encoding='utf8') as f:
-            f.writelines(esjspy.base.missing_log)
+            f.writelines(esjspy.base.black_list_log)
 
 
 def check_update(book_urls: Optional[List[str]] = None, cache_dir: Union[Path, str] = Path(CACHE_DIR),
@@ -235,4 +235,4 @@ def update_all(book_urls: Optional[List[str]] = None, black_list: set = BLACK_LI
             f.writelines(esjspy.base.missing_log)
     if esjspy.base.black_list_log:
         with open('black_list.txt', 'w', encoding='utf8') as f:
-            f.writelines(esjspy.base.missing_log)
+            f.writelines(esjspy.base.black_list_log)
