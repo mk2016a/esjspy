@@ -164,9 +164,9 @@ def save_books(book_urls: Optional[List[str]] = None, black_list: set = BLACK_LI
 
 
 def check_update(book_urls: Optional[List[str]] = None, cache_dir: Union[Path, str] = Path(CACHE_DIR),
-                 black_list: set = BLACK_LIST,
-                 proxies: Optional[Dict[str, str]] = PROXIES, xpath_dict: Dict[str, str] = XPATH_DICT,
-                 cool_down: int = COOL_DOWN, max_retries: int = MAX_RETRIES):
+                 black_list: set = BLACK_LIST, proxies: Optional[Dict[str, str]] = PROXIES,
+                 xpath_dict: Dict[str, str] = XPATH_DICT, cool_down: int = COOL_DOWN,
+                 max_retries: int = MAX_RETRIES):
     """
     检查多部小说是否含有更新。
 
@@ -207,3 +207,32 @@ def check_update(book_urls: Optional[List[str]] = None, cache_dir: Union[Path, s
     loop.run_until_complete(
         esjspy.base.async_check_update(book_urls=book_urls, black_list=black_list, cache_dir=cache_dir, proxies=proxies,
                                        xpath_dict=xpath_dict, cool_down=cool_down, max_retries=max_retries))
+
+
+def update_all(book_urls: Optional[List[str]] = None, black_list: set = BLACK_LIST, use_cache=True,
+               language: str = LANGUAGE, style: str = DEFAULT_CSS, save_dir: Union[Path, str] = Path(SAVE_DIR),
+               cache_dir: Union[Path, str] = Path(CACHE_DIR), proxies: Optional[Dict[str, str]] = PROXIES,
+               xpath_dict: Dict[str, str] = XPATH_DICT, cool_down: int = COOL_DOWN,
+               max_retries: int = MAX_RETRIES):
+    if isinstance(cache_dir, str):
+        cache_dir = Path(cache_dir)
+    if isinstance(save_dir, str):
+        save_dir=Path(save_dir)
+    loop = asyncio.get_event_loop()
+    if not book_urls:
+        if not Path('all_books.py').exists():
+            loop.run_until_complete(
+                esjspy.base.async_build_book_list(black_list=black_list, max_page=MAX_PAGES, proxies=proxies,
+                                                  xpath_dict=xpath_dict, cool_down=cool_down, max_retries=max_retries))
+        all_books = __import__('all_books')
+        book_urls = all_books.ALL_URLS
+    loop.run_until_complete(
+        esjspy.base.async_update_all(book_urls=book_urls, black_list=black_list, use_cache=use_cache, language=language,
+                                     style=style, save_dir=save_dir, cache_dir=cache_dir, proxies=proxies,
+                                     xpath_dict=xpath_dict, cool_down=cool_down, max_retries=max_retries))
+    if esjspy.base.missing_log:
+        with open('missing.txt', 'w', encoding='utf8') as f:
+            f.writelines(esjspy.base.missing_log)
+    if esjspy.base.black_list_log:
+        with open('black_list.txt', 'w', encoding='utf8') as f:
+            f.writelines(esjspy.base.missing_log)

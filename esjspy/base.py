@@ -468,8 +468,8 @@ async def _async_has_update(book_url: str, cache_dir=CACHE_DIR, **kwargs: Any) -
     return online_book_data != cached_book_data
 
 
-async def async_check_update(book_urls: List[str], black_list: set = BLACK_LIST,
-                             proxies: Optional[Dict[str, str]] = PROXIES, **kwargs: Any):
+async def _async_check_update(book_urls: List[str], black_list: set = BLACK_LIST,
+                              proxies: Optional[Dict[str, str]] = PROXIES, **kwargs: Any) -> List[str]:
     if proxies:
         kwargs['proxy'] = proxies['http']
     if black_list:
@@ -479,8 +479,18 @@ async def async_check_update(book_urls: List[str], black_list: set = BLACK_LIST,
         for book_url in book_urls:
             if await _async_has_update(book_url=book_url, session=session, proxy=proxies['http'], **kwargs):
                 checked_list.append(book_url)
+    return checked_list
+
+
+async def async_check_update(**kwargs: Any):
+    update_list = await _async_check_update(**kwargs)
     with open('update.log', 'w', encoding='utf8') as f:
-        f.writelines(["'%s',\n" % i for i in checked_list])
+        f.writelines(["'%s',\n" % i for i in update_list])
+
+
+async def async_update_all(book_urls: List[str], **kwargs: Any):
+    update_list = await _async_check_update(book_urls=book_urls, **kwargs)
+    await async_save_books(book_urls=update_list, **kwargs)
 
 
 def _check_toc(toc: List[str]) -> bool:
