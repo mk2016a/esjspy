@@ -477,7 +477,7 @@ async def _async_check_update(book_urls: List[str], black_list: set = BLACK_LIST
     checked_list = []
     async with aiohttp.ClientSession() as session:
         for book_url in book_urls:
-            if await _async_has_update(book_url=book_url, session=session, proxy=proxies['http'], **kwargs):
+            if await _async_has_update(book_url=book_url, session=session, **kwargs):
                 checked_list.append(book_url)
     return checked_list
 
@@ -488,9 +488,16 @@ async def async_check_update(**kwargs: Any):
         f.writelines(["'%s',\n" % i for i in update_list])
 
 
-async def async_update_all(book_urls: List[str], **kwargs: Any):
-    update_list = await _async_check_update(book_urls=book_urls, **kwargs)
-    await async_save_books(book_urls=update_list, **kwargs)
+async def async_update_all(book_urls: Optional[List[str]] = None, black_list: set = BLACK_LIST, use_cache=True,
+                           language: str = LANGUAGE, style: str = DEFAULT_CSS, save_dir: Path = Path(SAVE_DIR),
+                           cache_dir: Path = Path(CACHE_DIR), proxies: Optional[Dict[str, str]] = PROXIES,
+                           xpath_dict: Dict[str, str] = XPATH_DICT, cool_down: int = COOL_DOWN,
+                           max_retries: int = MAX_RETRIES):
+    update_list = await _async_check_update(book_urls=book_urls, black_list=black_list, proxies=proxies,
+                                            cache_dir=cache_dir)
+    await async_save_books(book_urls=update_list, black_list=black_list, use_cache=use_cache, language=language,
+                           style=style, save_dir=save_dir, cache_dir=cache_dir, proxies=proxies,
+                           xpath_dict=xpath_dict, cool_down=cool_down, max_retries=max_retries)
 
 
 def _check_toc(toc: List[str]) -> bool:
