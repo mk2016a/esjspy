@@ -102,7 +102,8 @@ class Book:
     missing_chapters: List[MissingChapter]
 
     def write_epub(self, save_dir: Path = Path(SAVE_DIR), style: str = DEFAULT_CSS, use_cache: bool = USE_CACHE,
-                   language: str = LANGUAGE, cache_dir: Path = Path(CACHE_DIR), add_copyright_page=True):
+                   language: str = LANGUAGE, cache_dir: Path = Path(CACHE_DIR), add_copyright_page=True,
+                   end_update=True, ):
         length = len(self.content)
         missing_number = len(self.missing_chapters)
         title = _default_cc.convert(self.book_data.title)
@@ -171,8 +172,9 @@ class Book:
         shutil.move('./writing.epub', str(save_path))
         logger.debug('已生成《%s》一书。' % title if LANGUAGE in _simplified else '已生成《%s》一書。' % title)
         # 更新缓存中图书信息
-        _dump(identifier=_gen_identifier_from_url(book_data.url), some_obj=self.book_data,
-              cache_dir=cache_dir, use_cache=use_cache)
+        if end_update:
+            _dump(identifier=_gen_identifier_from_url(book_data.url), some_obj=self.book_data,
+                  cache_dir=cache_dir, use_cache=use_cache)
 
 
 @lru_cache(maxsize=None)
@@ -447,6 +449,7 @@ async def _async_fetch_book(book_url: str, **kwargs: Any) -> Book:
 
 
 async def async_save_books(book_urls: List[str], use_cache: bool = True, proxies: Dict[str, str] = PROXIES,
+                           end_update=True,
                            black_list: set = BLACK_LIST, language: str = LANGUAGE, style: str = DEFAULT_CSS,
                            save_dir: Path = Path(SAVE_DIR), cache_dir: Path = Path(CACHE_DIR), **kwargs: Any) -> None:
     if proxies:
@@ -457,7 +460,8 @@ async def async_save_books(book_urls: List[str], use_cache: bool = True, proxies
         for book_url in book_urls:
             book = await _async_fetch_book(book_url=book_url, use_cache=use_cache, session=session,
                                            cache_dir=cache_dir, **kwargs)
-            book.write_epub(style=style, save_dir=save_dir, language=language, use_cache=use_cache, cache_dir=cache_dir)
+            book.write_epub(style=style, save_dir=save_dir, language=language, use_cache=use_cache, cache_dir=cache_dir,
+                            end_update=end_update)
 
 
 async def _async_has_update(book_url: str, cache_dir=CACHE_DIR, **kwargs: Any) -> bool:
@@ -491,12 +495,12 @@ async def async_check_update(**kwargs: Any):
 async def async_update_all(book_urls: Optional[List[str]] = None, black_list: set = BLACK_LIST, use_cache=True,
                            language: str = LANGUAGE, style: str = DEFAULT_CSS, save_dir: Path = Path(SAVE_DIR),
                            cache_dir: Path = Path(CACHE_DIR), proxies: Optional[Dict[str, str]] = PROXIES,
-                           xpath_dict: Dict[str, str] = XPATH_DICT, cool_down: int = COOL_DOWN,
+                           xpath_dict: Dict[str, str] = XPATH_DICT, cool_down: int = COOL_DOWN, end_update=True,
                            max_retries: int = MAX_RETRIES):
     update_list = await _async_check_update(book_urls=book_urls, black_list=black_list, proxies=proxies,
                                             cache_dir=cache_dir)
     await async_save_books(book_urls=update_list, black_list=black_list, use_cache=use_cache, language=language,
-                           style=style, save_dir=save_dir, cache_dir=cache_dir, proxies=proxies,
+                           style=style, save_dir=save_dir, cache_dir=cache_dir, proxies=proxies, end_update=end_update,
                            xpath_dict=xpath_dict, cool_down=cool_down, max_retries=max_retries)
 
 

@@ -212,12 +212,12 @@ def check_update(book_urls: Optional[List[str]] = None, cache_dir: Union[Path, s
 def update_all(book_urls: Optional[List[str]] = None, black_list: set = BLACK_LIST, use_cache=True,
                language: str = LANGUAGE, style: str = DEFAULT_CSS, save_dir: Union[Path, str] = Path(SAVE_DIR),
                cache_dir: Union[Path, str] = Path(CACHE_DIR), proxies: Optional[Dict[str, str]] = PROXIES,
-               xpath_dict: Dict[str, str] = XPATH_DICT, cool_down: int = COOL_DOWN,
+               xpath_dict: Dict[str, str] = XPATH_DICT, cool_down: int = COOL_DOWN, end_update=True,
                max_retries: int = MAX_RETRIES):
     if isinstance(cache_dir, str):
         cache_dir = Path(cache_dir)
     if isinstance(save_dir, str):
-        save_dir=Path(save_dir)
+        save_dir = Path(save_dir)
     loop = asyncio.get_event_loop()
     if not book_urls:
         if not Path('all_books.py').exists():
@@ -229,7 +229,8 @@ def update_all(book_urls: Optional[List[str]] = None, black_list: set = BLACK_LI
     loop.run_until_complete(
         esjspy.base.async_update_all(book_urls=book_urls, black_list=black_list, use_cache=use_cache, language=language,
                                      style=style, save_dir=save_dir, cache_dir=cache_dir, proxies=proxies,
-                                     xpath_dict=xpath_dict, cool_down=cool_down, max_retries=max_retries))
+                                     end_update=end_update, xpath_dict=xpath_dict, cool_down=cool_down,
+                                     max_retries=max_retries))
     if esjspy.base.missing_log:
         with open('missing.txt', 'w', encoding='utf8') as f:
             f.writelines(esjspy.base.missing_log)
