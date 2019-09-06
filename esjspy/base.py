@@ -449,9 +449,9 @@ async def _async_fetch_book(book_url: str, **kwargs: Any) -> Book:
 
 
 async def async_save_books(book_urls: List[str], use_cache: bool = True, proxies: Dict[str, str] = PROXIES,
-                           end_update=True,
-                           black_list: set = BLACK_LIST, language: str = LANGUAGE, style: str = DEFAULT_CSS,
-                           save_dir: Path = Path(SAVE_DIR), cache_dir: Path = Path(CACHE_DIR), **kwargs: Any) -> None:
+                           end_update=True, black_list: set = BLACK_LIST, language: str = LANGUAGE,
+                           style: str = DEFAULT_CSS, save_dir: Path = Path(SAVE_DIR),
+                           cache_dir: Path = Path(CACHE_DIR), **kwargs: Any) -> None:
     if proxies:
         kwargs['proxy'] = proxies['http']
     if black_list:
